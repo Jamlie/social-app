@@ -4,6 +4,7 @@ import {
     collection,
     getFirestore,
     onSnapshot,
+    orderBy,
     query,
     where,
 } from "firebase/firestore";
@@ -44,10 +45,11 @@ export function PostsFetcher({
         const db = getFirestore(app);
         const postsQuery =
             location === "home"
-                ? query(collection(db, "posts"))
+                ? query(collection(db, "posts"), orderBy("createdAt", "desc"))
                 : query(
                       collection(db, "posts"),
                       where("username", "==", visitedUserId),
+                      orderBy("createdAt", "desc"),
                   );
 
         const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
