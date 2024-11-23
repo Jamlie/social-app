@@ -21,7 +21,7 @@ export function PostModal() {
 
             if (response.ok) {
                 setOpenModal(false);
-                router.push("/");
+                router.refresh();
                 return;
             }
 
@@ -41,7 +41,7 @@ export function PostModal() {
                 onClick={() => setOpenModal(true)}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-full py-3 px-4 font-bold text-lg mt-4"
             >
-                Tweet
+                Post
             </button>
             {openModal && (
                 <div
@@ -59,7 +59,7 @@ export function PostModal() {
                             &times;
                         </button>
                         <h2 className="text-2xl font-bold mb-4 dark:text-white">
-                            Compose new Tweet
+                            Compose new Post
                         </h2>
                         <form onSubmit={handleFormPost} method="POST">
                             <textarea
@@ -84,7 +84,7 @@ export function PostModal() {
                                     type="submit"
                                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                                 >
-                                    Tweet
+                                    Post
                                 </button>
                             </div>
                         </form>

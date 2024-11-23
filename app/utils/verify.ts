@@ -1,6 +1,6 @@
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { NextRequest } from "next/server";
-import { app } from "../lib/firebaseServer";
+import { app } from "~/app/lib/firebaseServer";
 
 type Result<T> = [T, Error | null];
 

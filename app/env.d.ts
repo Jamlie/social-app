@@ -1,5 +1,9 @@
 declare namespace NodeJS {
     export interface ProcessEnv {
+        readonly CLOUDINARY_CLOUD_NAME: string;
+        readonly CLOUDINARY_API_KEY: string;
+        readonly CLOUDINARY_API_SECRET: string;
+
         readonly FIREBASE_PRIVATE_KEY_ID: string;
         readonly FIREBASE_PRIVATE_KEY: string;
         readonly FIREBASE_PROJECT_ID: string;

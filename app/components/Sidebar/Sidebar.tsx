@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { PostModal } from "./PostModal";
-import { Home as HomeIcon } from "./Icons/Home";
-import { ExploreIcon } from "./Icons/Explore";
-import { NotificationsIcon } from "./Icons/Notifications";
-import { MessagesIcon } from "./Icons/Messages";
-import { BookmarksIcon } from "./Icons/Bookmarks";
-import { ProfileIcon } from "./Icons/Profile";
-import { LogoutIcon } from "./Icons/Logout";
 import { logout } from "./actions/logout";
+import {
+    Bell,
+    Bookmark,
+    Hash,
+    House,
+    LogOut,
+    Mail,
+    UserRound,
+} from "lucide-react";
 
 type SidebarProps = {
     name: string;
@@ -32,21 +34,21 @@ export function Sidebar({
                         href="/"
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                        <HomeIcon />
+                        <House />
                         <span className="ml-4">Home</span>
                     </Link>
                     <Link
                         href="/explore"
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                        <ExploreIcon />
+                        <Hash />
                         <span className="ml-4">Explore</span>
                     </Link>
                     <Link
                         href="/notifications"
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                        <NotificationsIcon />
+                        <Bell />
                         <span className="ml-4 flex items-center">
                             Notifications
                             {unreadNotifications > 0 && (
@@ -60,7 +62,7 @@ export function Sidebar({
                         href="/messages"
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                        <MessagesIcon />
+                        <Mail />
                         <span className="ml-4 flex items-center">
                             Messages
                             {unreadMessages > 0 && (
@@ -74,14 +76,14 @@ export function Sidebar({
                         href="/bookmarks"
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                     >
-                        <BookmarksIcon />
+                        <Bookmark />
                         <span className="ml-4">Bookmarks</span>
                     </Link>
                     <Link
                         className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                         href={`/${username}`}
                     >
-                        <ProfileIcon />
+                        <UserRound />
                         <span className="ml-4">Profile</span>
                     </Link>
                     <form action={logout}>
@@ -90,7 +92,7 @@ export function Sidebar({
                             className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 w-full"
                         >
                             <span className="flex pl-0.5">
-                                <LogoutIcon />
+                                <LogOut />
                             </span>
                             <span className="ml-3.5">Sign out</span>
                         </button>

@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
             name: name,
             username: username.toLowerCase(),
             email: email.toLowerCase(),
+            pfp: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7mMNz8YCBvYmnr3BQUPX__YsC_WtDuAevwg&s",
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         });

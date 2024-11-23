@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { app } from "../lib/firebaseClient";
+import { app } from "~/app/lib/firebaseClient";
 
 export function LoginForm() {
     const router = useRouter();

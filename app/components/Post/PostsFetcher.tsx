@@ -2,8 +2,8 @@
 
 import {
     collection,
-    getDocs,
     getFirestore,
+    onSnapshot,
     query,
     where,
 } from "firebase/firestore";
@@ -41,32 +41,31 @@ export function PostsFetcher({
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        async function fetchPosts() {
-            try {
-                const db = getFirestore(app);
-                const postsQuery =
-                    location === "home"
-                        ? query(collection(db, "posts"))
-                        : query(
-                              collection(db, "posts"),
-                              where("username", "==", visitedUserId),
-                          );
-                const querySnapshot = await getDocs(postsQuery);
-                const postsData = querySnapshot.docs.map((doc) => {
-                    const data = doc.data() as PostData;
-                    return {
-                        id: doc.id,
-                        ...data,
-                    };
-                });
-                setPosts(postsData);
-            } finally {
-                setLoading(false);
-            }
-        }
+        const db = getFirestore(app);
+        const postsQuery =
+            location === "home"
+                ? query(collection(db, "posts"))
+                : query(
+                      collection(db, "posts"),
+                      where("username", "==", visitedUserId),
+                  );
 
-        fetchPosts();
-    }, []);
+        const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+            const postsData = querySnapshot.docs.map((doc) => {
+                const data = doc.data() as PostData;
+                return {
+                    id: doc.id,
+                    ...data,
+                };
+            });
+            setPosts(postsData);
+            setLoading(false);
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [visitedUserId, location]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -76,7 +75,6 @@ export function PostsFetcher({
         <>
             {posts.map((post) => {
                 let isLiked = post.likers[currentUser];
-                console.log(post.likers);
                 return (
                     <Post
                         key={post.postID}
@@ -85,7 +83,6 @@ export function PostsFetcher({
                         username={post.username}
                         content={post.content}
                         verified={false}
-                        avatar="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7mMNz8YCBvYmnr3BQUPX__YsC_WtDuAevwg&s"
                         timestamp={new Date(
                             post.createdAt.seconds * 1000,
                         ).toLocaleString()}

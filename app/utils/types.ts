@@ -16,3 +16,11 @@ export type Like = {
     userID: string;
     likes: number;
 };
+
+export type User = {
+    uid: string;
+    name: string;
+    username: string;
+    email: string;
+    pfp: string;
+};

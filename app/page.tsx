@@ -4,10 +4,25 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { PostsFetcher } from "./components/Post/PostsFetcher";
 import { database } from "~/app/lib/database";
+import { User } from "./utils/types";
+import { QuerySnapshot } from "firebase-admin/firestore";
 
 export const metadata: Metadata = {
     title: "Home",
 };
+
+async function getUserData(username: string): Promise<QuerySnapshot | null> {
+    const userSnapshot = await database.db
+        .collection("users")
+        .where("username", "==", username)
+        .get();
+
+    if (userSnapshot.empty) {
+        return null;
+    }
+
+    return userSnapshot;
+}
 
 export default async function Home() {
     const auth = database.auth;
@@ -32,6 +47,15 @@ export default async function Home() {
         redirect("/login");
     }
 
+    let currentUserSnapshot: QuerySnapshot | null = null;
+    currentUserSnapshot = await getUserData(user.customClaims.username);
+
+    let currentUser: User | null = null;
+
+    if (currentUserSnapshot && !currentUserSnapshot.empty) {
+        currentUser = currentUserSnapshot.docs[0].data() as User;
+    }
+
     return (
         <>
             <div className="flex min-h-screen">
@@ -39,9 +63,9 @@ export default async function Home() {
                     <Sidebar
                         name={user.displayName}
                         username={user.customClaims.username}
-                        avatar="https://cdn.bsky.app/img/avatar/plain/did:plc:kuh5pbumsg6amawjlwmac4bq/bafkreigi3rh6iprnbgysxiqsp3ov3gn63mv3f7yvgscv2oeu2xbtur5bey@jpeg"
-                        unreadNotifications={5}
-                        unreadMessages={2}
+                        avatar={currentUser?.pfp!}
+                        unreadNotifications={0}
+                        unreadMessages={0}
                     />
                 </div>
 
