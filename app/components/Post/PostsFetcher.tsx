@@ -3,6 +3,7 @@
 import {
     collection,
     DocumentReference,
+    getDoc,
     getFirestore,
     onSnapshot,
     orderBy,
@@ -43,24 +44,36 @@ export function PostsFetcher({
 
     useEffect(() => {
         const db = getFirestore(app);
-        const postsQuery =
-            location === "home"
-                ? query(collection(db, "posts"), orderBy("createdAt", "desc"))
-                : query(
-                      collection(db, "posts"),
-                      where("username", "==", visitedUserId),
-                      orderBy("createdAt", "desc"),
-                  );
 
-        const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-            const postsData = querySnapshot.docs.map((doc) => {
-                const data = doc.data() as PostData;
-                return {
-                    id: doc.id,
-                    ...data,
-                };
-            });
-            setPosts(postsData);
+        const postsQuery = query(
+            collection(db, "posts"),
+            orderBy("createdAt", "desc"),
+        );
+
+        const unsubscribe = onSnapshot(postsQuery, async (querySnapshot) => {
+            const postsData = await Promise.all(
+                querySnapshot.docs.map(async (doc) => {
+                    const data = doc.data() as PostData;
+
+                    const userDoc = await getDoc(data.userRef);
+                    const userData = userDoc.data();
+
+                    return {
+                        id: doc.id,
+                        ...data,
+                        username: userData?.username,
+                    };
+                }),
+            );
+
+            const filteredPosts =
+                location === "profile"
+                    ? postsData.filter(
+                          (post) => post.username === visitedUserId,
+                      )
+                    : postsData;
+
+            setPosts(filteredPosts);
             setLoading(false);
         });
 
