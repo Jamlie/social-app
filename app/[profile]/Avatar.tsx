@@ -66,7 +66,6 @@ export function Avatar({ pfp }: { pfp: string }) {
             if (!response.ok) throw new Error("Upload failed");
 
             const photoData = await response.json();
-            console.log("Upload successful:", photoData);
             setProfilePic(photoData.pfp);
             handleCancel();
             router.refresh();

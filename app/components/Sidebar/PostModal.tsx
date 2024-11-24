@@ -1,10 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function PostModal() {
-    const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [postError, setPostError] = useState("");
 
@@ -14,14 +12,14 @@ export function PostModal() {
         const formData = new FormData(form);
 
         try {
+            setOpenModal(false);
+
             const response = await fetch("/api/post/create", {
                 method: "POST",
                 body: formData,
             });
 
             if (response.ok) {
-                setOpenModal(false);
-                router.refresh();
                 return;
             }
 

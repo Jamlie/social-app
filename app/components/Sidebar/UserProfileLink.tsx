@@ -1,6 +1,6 @@
 "use client";
 
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { app } from "~/app/lib/firebaseClient";
@@ -16,19 +16,27 @@ export function UserProfileLink({ userId }: { userId: string }) {
     const [userData, setUserData] = useState<SidebarUserData | null>(null);
 
     useEffect(() => {
-        async function fetchUserData() {
-            const db = getFirestore(app);
-            const userDocRef = doc(db, "users", userId);
-            const userDoc = await getDoc(userDocRef);
+        const db = getFirestore(app);
+        const userDocRef = doc(db, "users", userId);
 
-            if (userDoc.exists()) {
-                setUserData(userDoc.data() as SidebarUserData);
-            } else {
-                console.error("No such user found!");
-            }
-        }
+        const unsubscribe = onSnapshot(
+            userDocRef,
+            (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    setUserData(docSnapshot.data() as SidebarUserData);
+                } else {
+                    console.error("No such user found!");
+                    setUserData(null);
+                }
+            },
+            (error) => {
+                console.error("Error fetching user data:", error);
+            },
+        );
 
-        fetchUserData();
+        return () => {
+            unsubscribe();
+        };
     }, [userId]);
 
     if (!userData) {
