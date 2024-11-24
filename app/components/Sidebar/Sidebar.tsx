@@ -10,19 +10,18 @@ import {
     Mail,
     UserRound,
 } from "lucide-react";
+import { UserProfileLink } from "./UserProfileLink";
 
 type SidebarProps = {
-    name: string;
+    userId: string;
     username: string;
-    avatar: string;
     unreadNotifications: number;
     unreadMessages: number;
 };
 
 export function Sidebar({
-    name,
+    userId,
     username,
-    avatar,
     unreadMessages,
     unreadNotifications,
 }: SidebarProps) {
@@ -99,23 +98,7 @@ export function Sidebar({
                     </form>
                 </nav>
                 <PostModal />
-                <Link
-                    href={`/${username}`}
-                    className="flex items-center w-full rounded-full p-3 mt-4 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    type="button"
-                >
-                    <img
-                        src={avatar}
-                        alt="Profile"
-                        className="w-10 h-10 rounded-full"
-                    />
-                    <div className="ml-3 text-left">
-                        <div className="font-bold text-gray-900 dark:text-white">
-                            {name}
-                        </div>
-                        <div className="text-gray-500">@{username}</div>
-                    </div>
-                </Link>
+                <UserProfileLink userId={userId} />
             </aside>
         </>
     );

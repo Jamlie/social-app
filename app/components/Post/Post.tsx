@@ -6,12 +6,10 @@ import { Heart } from "./Icons/Heart";
 import { Verified } from "./Icons/Verified";
 import { MessageCircle, Repeat2 } from "lucide-react";
 import {
-    collection,
-    getDocs,
+    doc,
+    DocumentReference,
+    getDoc,
     getFirestore,
-    limit,
-    query,
-    where,
 } from "firebase/firestore";
 import { app } from "~/app/lib/firebaseClient";
 import { User } from "~/app/utils/types";
@@ -19,8 +17,7 @@ import { getDefaultPfp } from "~/app/utils/profile";
 
 type PostsProps = {
     id: string;
-    name: string;
-    username: string;
+    userRef: DocumentReference;
     timestamp: string;
     content: string;
     likes?: number;
@@ -30,30 +27,20 @@ type PostsProps = {
     isLiked?: boolean;
 };
 
-async function getUserData(username: string): Promise<User | null> {
-    const db = getFirestore(app);
-
-    const userQuery = query(
-        collection(db, "users"),
-        where("username", "==", username),
-        limit(1),
-    );
-    const usersSnapshot = await getDocs(userQuery);
-
-    if (usersSnapshot.empty) {
-        return null;
-    }
-
-    const user = usersSnapshot.docs[0].data() as User;
-
-    return user;
-}
-
 export function Post(props: PostsProps) {
     const router = useRouter();
     const [hasLiked, setHasLiked] = useState(props.isLiked!);
     const [numOfLikes, setNumOfLikes] = useState(props.likes);
     const [user, setUser] = useState<User | null>(null);
+
+    async function getUserData() {
+        const db = getFirestore(app);
+        const userDoc = doc(db, props.userRef.path);
+        const userSnapshot = await getDoc(userDoc);
+        if (userSnapshot.exists()) {
+            setUser(userSnapshot.data() as User);
+        }
+    }
 
     async function likePost() {
         const response = await fetch("/api/post/like", {
@@ -63,7 +50,7 @@ export function Post(props: PostsProps) {
             },
             body: JSON.stringify({
                 postID: props.id,
-                userID: props.username,
+                userID: user?.username,
                 likes: props.likes,
             }),
         });
@@ -75,11 +62,7 @@ export function Post(props: PostsProps) {
     }
 
     useEffect(() => {
-        async function doSomething() {
-            setUser(await getUserData(props.username));
-        }
-
-        doSomething();
+        getUserData();
     }, []);
 
     return (
@@ -88,8 +71,8 @@ export function Post(props: PostsProps) {
                 <div className="flex items-start space-x-3">
                     <img
                         src={user?.pfp || getDefaultPfp()}
-                        alt={`${props.name}'s avatar`}
-                        onClick={() => router.push(`/${props.username}`)}
+                        alt={`${user?.name}'s avatar`}
+                        onClick={() => router.push(`/${user?.username}`)}
                         className="w-12 h-12 rounded-full cursor-pointer"
                     />
 
@@ -99,20 +82,20 @@ export function Post(props: PostsProps) {
                                 <span
                                     className="font-bold text-black dark:text-white cursor-pointer"
                                     onClick={() =>
-                                        router.push(`/${props.username}`)
+                                        router.push(`/${user?.username}`)
                                     }
                                 >
-                                    {props.name}
+                                    {user?.name}
                                 </span>
                                 {props.verified ? <Verified /> : ""}
                             </div>
                             <span
                                 onClick={() =>
-                                    router.push(`/${props.username}`)
+                                    router.push(`/${user?.username}`)
                                 }
                                 className="font-bold text-black dark:text-white cursor-pointer"
                             >
-                                @{props.username}
+                                @{user?.username}
                             </span>
                             <span className="text-gray-400">.</span>
                             <span className="text-gray-400">

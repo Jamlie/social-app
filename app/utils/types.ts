@@ -1,8 +1,8 @@
+import { DocumentReference } from "firebase-admin/firestore";
+
 export type Post = {
     postID?: string;
-    userID?: string;
-    username?: string;
-    name?: string;
+    userRef?: DocumentReference;
     content?: string;
     likes?: number;
     replies?: number;

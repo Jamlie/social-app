@@ -61,9 +61,8 @@ export default async function Home() {
             <div className="flex min-h-screen">
                 <div className="hidden md:block md:w-64 lg:w-72">
                     <Sidebar
-                        name={user.displayName}
+                        userId={user.uid}
                         username={user.customClaims.username}
-                        avatar={currentUser?.pfp!}
                         unreadNotifications={0}
                         unreadMessages={0}
                     />

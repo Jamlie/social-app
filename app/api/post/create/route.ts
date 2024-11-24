@@ -32,11 +32,11 @@ export async function POST(req: NextRequest) {
         );
     }
 
+    const author = db.collection("users").doc(token!.uid);
+
     const newPost: Post = {
         postID: uuidv4(),
-        userID: token!.uid,
-        username: token!.username,
-        name: token!.name,
+        userRef: author,
         content: content.toString(),
         likes: 0,
         likers: {},

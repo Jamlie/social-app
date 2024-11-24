@@ -91,11 +91,10 @@ export default async function Profile({
             <div className="flex min-h-screen">
                 <div className="hidden md:block md:w-64 lg:w-72">
                     <Sidebar
-                        name={currentUserRecord?.displayName || "Anonymous"}
+                        userId={user.uid}
                         username={
                             currentUserRecord?.customClaims?.username || ""
                         }
-                        avatar={currentUser?.pfp || ""}
                         unreadNotifications={0}
                         unreadMessages={0}
                     />

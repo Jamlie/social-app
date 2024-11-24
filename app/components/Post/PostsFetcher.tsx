@@ -2,6 +2,7 @@
 
 import {
     collection,
+    DocumentReference,
     getFirestore,
     onSnapshot,
     orderBy,
@@ -15,8 +16,7 @@ import { Post } from "./Post";
 type PostData = {
     postID: string;
     content: string;
-    name: string;
-    username: string;
+    userRef: DocumentReference;
     likes: number;
     replies: number;
     reposts: number;
@@ -81,8 +81,7 @@ export function PostsFetcher({
                     <Post
                         key={post.postID}
                         id={post.postID}
-                        name={post.name}
-                        username={post.username}
+                        userRef={post.userRef}
                         content={post.content}
                         verified={false}
                         timestamp={new Date(
