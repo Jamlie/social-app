@@ -6,14 +6,17 @@ import { Heart } from "./Icons/Heart";
 import { Verified } from "./Icons/Verified";
 import { MessageCircle, Repeat2 } from "lucide-react";
 import {
+    collection,
     doc,
     DocumentReference,
     getDoc,
+    getDocs,
     getFirestore,
 } from "firebase/firestore";
 import { app } from "~/app/lib/firebaseClient";
 import { User } from "~/app/utils/types";
 import { getDefaultPfp } from "~/app/utils/profile";
+import { CommentSection } from "./CommentSection";
 
 type PostsProps = {
     id: string;
@@ -31,7 +34,9 @@ export function Post(props: PostsProps) {
     const router = useRouter();
     const [hasLiked, setHasLiked] = useState(props.isLiked!);
     const [numOfLikes, setNumOfLikes] = useState(props.likes);
+    const [numOfComments, setNumOfComments] = useState(props.replies);
     const [user, setUser] = useState<User | null>(null);
+    const [showComments, setShowComments] = useState(false);
 
     async function getUserData() {
         const db = getFirestore(app);
@@ -61,13 +66,21 @@ export function Post(props: PostsProps) {
         setHasLiked((prev) => !prev);
     }
 
+    async function fetchCommentCount() {
+        const db = getFirestore(app);
+        const commentsRef = collection(db, "posts", props.id, "comments");
+        const commentsSnapshot = await getDocs(commentsRef);
+        setNumOfComments(commentsSnapshot.size);
+    }
+
     useEffect(() => {
         getUserData();
+        fetchCommentCount();
     }, []);
 
     return (
         <>
-            <div className="max-w-xl mx-auto bg-white dark:bg-[#13151a] border border-gray-200 dark:border-gray-800 rounded-lg p-4 my-4">
+            <div className="max-w-xl mx-auto bg-white dark:bg-background border border-gray-200 dark:border-gray-800 rounded-lg p-4 my-4">
                 <div className="flex items-start space-x-3">
                     <img
                         src={user?.pfp || getDefaultPfp()}
@@ -97,7 +110,7 @@ export function Post(props: PostsProps) {
                             >
                                 @{user?.username}
                             </span>
-                            <span className="text-gray-400">.</span>
+                            <span className="text-gray-400">·</span>
                             <span className="text-gray-400">
                                 {props.timestamp}
                             </span>
@@ -108,9 +121,12 @@ export function Post(props: PostsProps) {
                         </p>
 
                         <div className="flex items-center justify-start space-x-10 mt-3">
-                            <button className="flex items-center space-x-2 text-gray-400 hover:text-blue-500 group">
+                            <button
+                                className="flex items-center space-x-2 text-gray-400 hover:text-blue-500 group"
+                                onClick={() => setShowComments(!showComments)}
+                            >
                                 <MessageCircle size={20} />
-                                <span>{props.replies}</span>
+                                <span>{numOfComments}</span>
                             </button>
                             <button className="flex items-center space-x-2 text-gray-400 hover:text-blue-500 group">
                                 <Repeat2
@@ -127,6 +143,13 @@ export function Post(props: PostsProps) {
                                 <span>{numOfLikes}</span>
                             </button>
                         </div>
+
+                        {showComments && (
+                            <CommentSection
+                                postId={props.id}
+                                userRef={props.userRef}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

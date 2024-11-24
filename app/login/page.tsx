@@ -23,7 +23,7 @@ export default async function Login() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-black">
             <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
                 <div className="space-y-1 mb-6">
                     <h2 className="text-2xl font-bold">Welcome back</h2>

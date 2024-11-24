@@ -58,7 +58,7 @@ export default async function Home() {
 
     return (
         <>
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen bg-white dark:bg-black">
                 <div className="hidden md:block md:w-64 lg:w-72">
                     <Sidebar
                         userId={user.uid}

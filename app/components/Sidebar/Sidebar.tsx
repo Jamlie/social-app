@@ -11,6 +11,7 @@ import {
     UserRound,
 } from "lucide-react";
 import { UserProfileLink } from "./UserProfileLink";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 type SidebarProps = {
     userId: string;
@@ -85,6 +86,7 @@ export function Sidebar({
                         <UserRound />
                         <span className="ml-4">Profile</span>
                     </Link>
+                    <DarkModeToggle />
                     <form action={logout}>
                         <button
                             type="submit"

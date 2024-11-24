@@ -23,4 +23,8 @@ export type User = {
     username: string;
     email: string;
     pfp: string;
+    following: string[];
+    followers: string[];
+    blockedUsers: string[];
+    blockedBy: string[];
 };

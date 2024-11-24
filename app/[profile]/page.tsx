@@ -88,7 +88,7 @@ export default async function Profile({
 
     return (
         <>
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen bg-white dark:bg-black">
                 <div className="hidden md:block md:w-64 lg:w-72">
                     <Sidebar
                         userId={user.uid}
@@ -105,7 +105,7 @@ export default async function Profile({
                         id="profile-container"
                         className="w-full max-w-3xl px-4 py-4 mb-16 md:mb-0"
                     >
-                        <div className="bg-white rounded-lg shadow-md dark:bg-gray-800">
+                        <div className="bg-white rounded-lg shadow-md dark:bg-foreground">
                             <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700">
                                 {currentUser &&
                                 currentUser.username === user.username ? (

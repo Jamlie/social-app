@@ -18,7 +18,7 @@ export default {
         },
     },
     plugins: [daisyui, aspectRatio],
-    daisyui: {
-        themes: ["light"],
-    },
+    // daisyui: {
+    //     themes: ["light", "dark"],
+    // },
 } satisfies Config;
