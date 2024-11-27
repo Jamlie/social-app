@@ -31,7 +31,7 @@ export function DarkModeToggle() {
     return (
         <button
             onClick={toggleDarkMode}
-            className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white bg-white dark:bg-foreground rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
             aria-label="Toggle dark mode"
         >
             {darkMode ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { app } from "~/app/lib/firebaseClient";

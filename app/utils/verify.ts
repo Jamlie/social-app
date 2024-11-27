@@ -1,10 +1,10 @@
-import { DecodedIdToken, getAuth } from "firebase-admin/auth";
+import { DecodedIdToken } from "firebase-admin/auth";
 import { NextRequest } from "next/server";
-import { app } from "~/app/lib/firebaseServer";
+import { database } from "~/app/lib/database";
 
 type Result<T> = [T, Error | null];
 
-const auth = getAuth(app);
+const auth = database.auth;
 
 export async function verifyToken(
     req: NextRequest,

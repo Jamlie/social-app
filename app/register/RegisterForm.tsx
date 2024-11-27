@@ -125,7 +125,7 @@ export function RegisterForm() {
                         type="text"
                         name="username"
                         placeholder="username"
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        className="auth-link"
                         onChange={(e) => setUsername(e.currentTarget.value)}
                         required
                     />
@@ -152,7 +152,7 @@ export function RegisterForm() {
                         type="text"
                         name="name"
                         placeholder="Full Name"
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        className="auth-link"
                         required
                     />
                 </div>
@@ -177,7 +177,7 @@ export function RegisterForm() {
                         type="email"
                         name="email"
                         placeholder="Email"
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        className="auth-link"
                         onChange={(e) => setEmail(e.currentTarget.value)}
                         required
                     />
@@ -204,7 +204,7 @@ export function RegisterForm() {
                         type="password"
                         name="password"
                         placeholder="Password"
-                        className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        className="auth-link"
                         onChange={(e) => setPassword(e.currentTarget.value)}
                         required
                     />
@@ -220,7 +220,7 @@ export function RegisterForm() {
 
             <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 dark:bg-blue-550 hover:bg-blue-700 dark:hover:bg-blue-650 text-white py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isSubmit}
             >
                 {isSubmit ? "Loading..." : "Sign Up"}

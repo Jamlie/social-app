@@ -5,7 +5,6 @@ import { PostsFetcher } from "~/app/components/Post/PostsFetcher";
 import { Metadata } from "next";
 import { database } from "~/app/lib/database";
 import { QuerySnapshot } from "firebase-admin/firestore";
-import { Sidebar } from "~/app/components/Sidebar/Sidebar";
 import { User } from "~/app/utils/types";
 import { Avatar } from "./Avatar";
 
@@ -88,71 +87,55 @@ export default async function Profile({
 
     return (
         <>
-            <div className="flex min-h-screen bg-white dark:bg-black">
-                <div className="hidden md:block md:w-64 lg:w-72">
-                    <Sidebar
-                        userId={user.uid}
-                        username={
-                            currentUserRecord?.customClaims?.username || ""
-                        }
-                        unreadNotifications={0}
-                        unreadMessages={0}
-                    />
-                </div>
-
-                <div className="flex-1 flex justify-center">
-                    <main
-                        id="profile-container"
-                        className="w-full max-w-3xl px-4 py-4 mb-16 md:mb-0"
-                    >
-                        <div className="bg-white rounded-lg shadow-md dark:bg-foreground">
-                            <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700">
-                                {currentUser &&
-                                currentUser.username === user.username ? (
-                                    <Avatar pfp={user.pfp} />
-                                ) : (
-                                    <div className="avatar">
-                                        <div className="w-16 h-16 rounded-full">
-                                            <img
-                                                src={user.pfp}
-                                                alt="User Avatar"
-                                            />
-                                        </div>
+            <div className="flex-1 flex justify-center">
+                <main
+                    id="profile-container"
+                    className="w-full max-w-3xl px-4 py-4 mb-16 md:mb-0"
+                >
+                    <div className="bg-white rounded-lg shadow-md dark:bg-foreground">
+                        <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700">
+                            {currentUser &&
+                            currentUser.username === user.username ? (
+                                <Avatar pfp={user.pfp} />
+                            ) : (
+                                <div className="avatar">
+                                    <div className="w-16 h-16 rounded-full">
+                                        <img src={user.pfp} alt="User Avatar" />
                                     </div>
-                                )}
-                                <div className="ml-4">
-                                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-                                        {name}
-                                    </h2>
-                                    <p className="text-gray-500 dark:text-gray-400">
-                                        @{username}
-                                    </p>
                                 </div>
-                            </div>
-                            <div className="p-4 text-gray-700 dark:text-gray-300">
-                                <p>
-                                    {currentUserRecord?.customClaims?.bio ||
-                                        "No bio available"}
+                            )}
+                            <div className="ml-4">
+                                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                                    {name}
+                                </h2>
+                                <p className="text-gray-500 dark:text-gray-400">
+                                    @{username}
                                 </p>
                             </div>
-                            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                                <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
-                                    Recent Posts
-                                </h3>
-                                <div id="posts-container">
-                                    <PostsFetcher
-                                        currentUser={
-                                            currentUserRecord?.customClaims
-                                                ?.username
-                                        }
-                                        visitedUserId={username}
-                                        location="profile"
-                                    />
-                                </div>
+                        </div>
+                        <div className="p-4 text-gray-700 dark:text-gray-300">
+                            <p>
+                                {currentUserRecord?.customClaims?.bio ||
+                                    "No bio available"}
+                            </p>
+                        </div>
+                        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                            <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+                                Recent Posts
+                            </h3>
+                            <div id="posts-container">
+                                <PostsFetcher
+                                    currentUser={
+                                        currentUserRecord?.customClaims
+                                            ?.username
+                                    }
+                                    visitedUserId={username}
+                                    location="profile"
+                                />
                             </div>
                         </div>
-                    </main>
-                </div>
+                    </div>
+                </main>
             </div>
         </>
     );

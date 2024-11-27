@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Sidebar } from "./components/Sidebar/Sidebar";
 import { PostsFetcher } from "./components/Post/PostsFetcher";
 import { database } from "~/app/lib/database";
 import { User } from "./utils/types";
@@ -58,27 +57,13 @@ export default async function Home() {
 
     return (
         <>
-            <div className="flex min-h-screen bg-white dark:bg-black">
-                <div className="hidden md:block md:w-64 lg:w-72">
-                    <Sidebar
-                        userId={user.uid}
-                        username={user.customClaims.username}
-                        unreadNotifications={0}
-                        unreadMessages={0}
+            <div className="flex-1 flex justify-center">
+                <main className="w-full max-w-xl px-4 py-4 mb-16 md:mb-0">
+                    <PostsFetcher
+                        location="home"
+                        currentUser={user.customClaims.username}
                     />
-                </div>
-
-                <div className="flex-1 flex justify-center">
-                    <main
-                        id="posts-container"
-                        className="w-full max-w-xl px-4 py-4 mb-16 md:mb-0"
-                    >
-                        <PostsFetcher
-                            location="home"
-                            currentUser={user.customClaims.username}
-                        />
-                    </main>
-                </div>
+                </main>
             </div>
         </>
     );
