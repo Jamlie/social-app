@@ -7,6 +7,7 @@ import { database } from "~/app/lib/database";
 import { QuerySnapshot } from "firebase-admin/firestore";
 import { User } from "~/app/utils/types";
 import { Avatar } from "./Avatar";
+import { EditProfileClient } from "./EditProfileClient";
 
 async function getUserData(username: string): Promise<QuerySnapshot | null> {
     const userSnapshot = await database.db
@@ -104,7 +105,7 @@ export default async function Profile({
                                     </div>
                                 </div>
                             )}
-                            <div className="ml-4">
+                            <div className="ml-4 flex-1">
                                 <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
                                     {name}
                                 </h2>
@@ -112,12 +113,20 @@ export default async function Profile({
                                     @{username}
                                 </p>
                             </div>
+                            {currentUser &&
+                                currentUser.username === user.username &&
+                                currentUserRecord && (
+                                    <div className="ml-auto">
+                                        <EditProfileClient
+                                            userId={currentUser.uid}
+                                            initialName={user.name}
+                                            initialBio={currentUser.bio}
+                                        />
+                                    </div>
+                                )}
                         </div>
                         <div className="p-4 text-gray-700 dark:text-gray-300">
-                            <p>
-                                {currentUserRecord?.customClaims?.bio ||
-                                    "No bio available"}
-                            </p>
+                            <p>{user.bio}</p>
                         </div>
                         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                             <h3 className="text-xl font-semibold text-gray-800 dark:text-white">

@@ -25,6 +25,7 @@ type PostData = {
         nanoseconds: number;
     };
     likers: Record<string, any>;
+    image?: string;
 };
 
 type PostsFetcherProps = {
@@ -96,6 +97,7 @@ export function PostsFetcher({
                         userRef={post.userRef}
                         content={post.content}
                         verified={false}
+                        image={post.image}
                         timestamp={new Date(
                             post.createdAt.seconds * 1000,
                         ).toLocaleString()}

@@ -1,7 +1,7 @@
 import { DocumentReference } from "firebase-admin/firestore";
 
 export type Post = {
-    postID?: string;
+    postID: string;
     userRef?: DocumentReference;
     content?: string;
     likes?: number;
@@ -9,6 +9,7 @@ export type Post = {
     reposts?: number;
     likers?: Record<string, any>;
     createdAt?: Date;
+    image?: string | null;
 };
 
 export type Like = {
@@ -23,6 +24,7 @@ export type User = {
     username: string;
     email: string;
     pfp: string;
+    bio: string;
     following: string[];
     followers: string[];
     blockedUsers: string[];

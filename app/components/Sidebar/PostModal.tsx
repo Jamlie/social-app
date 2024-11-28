@@ -1,35 +1,81 @@
 "use client";
-
-import { useState } from "react";
+import { Images } from "lucide-react";
+import { useState, useRef } from "react";
 
 export function PostModal() {
     const [openModal, setOpenModal] = useState(false);
     const [postError, setPostError] = useState("");
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     async function handleFormPost(e: React.FormEvent) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
+        if (selectedImage) {
+            formData.append("image", selectedImage);
+        }
+
         try {
             setOpenModal(false);
-
             const response = await fetch("/api/post/create", {
                 method: "POST",
                 body: formData,
             });
-
             if (response.ok) {
+                setSelectedImage(null);
+                setImagePreview(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
                 return;
             }
-
             const resJson = (await response.json()) as {
                 error: string;
             };
-
             setPostError(resJson.error);
         } catch (e) {
             console.error(e);
+        }
+    }
+
+    function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (file) {
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+
+            if (file.size > maxSize) {
+                setPostError("Image must be smaller than 5MB");
+                return;
+            }
+
+            if (!allowedTypes.includes(file.type)) {
+                setPostError("Only JPEG, PNG, and GIF images are allowed");
+                return;
+            }
+
+            setSelectedImage(file);
+
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
+
+            setPostError("");
+        }
+    }
+
+    function handleImageRemove() {
+        setSelectedImage(null);
+
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+        }
+
+        setImagePreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     }
 
@@ -67,9 +113,53 @@ export function PostModal() {
                                 placeholder="What's happening?"
                                 required
                             ></textarea>
-                            <span className="text-red-600 text-sm">
+
+                            <div className="mt-4 flex items-center">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageSelect}
+                                    accept="image/jpeg,image/png,image/gif"
+                                    className="hidden"
+                                    id="imageUpload"
+                                />
+                                <label
+                                    htmlFor="imageUpload"
+                                    className="cursor-pointer mr-2 text-blue-500 hover:text-blue-600"
+                                >
+                                    <Images size={20} />
+                                </label>
+
+                                {selectedImage && (
+                                    <div className="flex items-center">
+                                        <span className="text-sm mr-2">
+                                            {selectedImage.name}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={handleImageRemove}
+                                            className="text-red-500 hover:text-red-600"
+                                        >
+                                            ✖
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {imagePreview && (
+                                <div className="mt-4">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="max-w-full h-40 object-cover rounded-md"
+                                    />
+                                </div>
+                            )}
+
+                            <span className="text-red-600 text-sm block mt-2">
                                 {postError}
                             </span>
+
                             <div className="flex justify-end mt-4">
                                 <button
                                     type="button"

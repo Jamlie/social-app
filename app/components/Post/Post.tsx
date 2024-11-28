@@ -17,12 +17,15 @@ import { app } from "~/app/lib/firebaseClient";
 import { User } from "~/app/utils/types";
 import { getDefaultPfp } from "~/app/utils/profile";
 import { CommentSection } from "./CommentSection";
+import NextImage from "next/image";
+import { ImagePreview } from "./ImagePreview";
 
 type PostsProps = {
     id: string;
     userRef: DocumentReference;
     timestamp: string;
     content: string;
+    image?: string;
     likes?: number;
     reposts?: number;
     replies?: number;
@@ -37,6 +40,10 @@ export function Post(props: PostsProps) {
     const [numOfComments, setNumOfComments] = useState(props.replies);
     const [user, setUser] = useState<User | null>(null);
     const [showComments, setShowComments] = useState(false);
+    const [modalPhoto, setModalPhoto] = useState<{
+        url: string;
+        id: string;
+    } | null>(null);
 
     async function getUserData() {
         const db = getFirestore(app);
@@ -120,6 +127,25 @@ export function Post(props: PostsProps) {
                             {props.content}
                         </p>
 
+                        {props.image && (
+                            <div className="mt-3 mb-3">
+                                <NextImage
+                                    src={props.image}
+                                    alt="Post image"
+                                    width={600}
+                                    height={400}
+                                    className="w-full max-h-96 object-cover rounded-lg cursor-pointer"
+                                    priority
+                                    onClick={() =>
+                                        setModalPhoto({
+                                            url: props.image!,
+                                            id: props.id,
+                                        })
+                                    }
+                                />
+                            </div>
+                        )}
+
                         <div className="flex items-center justify-start space-x-10 mt-3">
                             <button
                                 className="flex items-center space-x-2 text-gray-400 hover:text-blue-500 group"
@@ -153,6 +179,14 @@ export function Post(props: PostsProps) {
                     </div>
                 </div>
             </div>
+
+            {modalPhoto && (
+                <ImagePreview
+                    photo={modalPhoto}
+                    onClose={() => setModalPhoto(null)}
+                    timestamp={props.timestamp}
+                />
+            )}
         </>
     );
 }
