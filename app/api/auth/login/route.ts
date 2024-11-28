@@ -55,5 +55,11 @@ export async function POST(request: NextRequest) {
         secure: process.env.NODE_ENV === "production",
     });
 
+    response.headers.set(
+        "Access-Control-Allow-Origin",
+        "https://jam-social-app.netlify.app",
+    );
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+
     return response;
 }
