@@ -44,7 +44,7 @@ export function PostModal() {
     function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (file) {
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxSize = 5 * 1024 * 1024;
             const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
             if (file.size > maxSize) {

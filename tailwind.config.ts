@@ -24,7 +24,7 @@ export default {
         plugin(function ({ addComponents }) {
             addComponents({
                 ".sidebar-link": {
-                    "@apply flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800":
+                    "@apply flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-background":
                         {},
                 },
                 ".auth-link": {
