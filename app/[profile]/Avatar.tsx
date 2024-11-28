@@ -106,7 +106,7 @@ export function Avatar({ pfp }: { pfp: string }) {
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
                     <div
                         ref={modalRef}
-                        className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 shadow-xl"
+                        className="bg-white dark:bg-background rounded-lg p-6 w-full max-w-md mx-4 shadow-xl"
                     >
                         <div className="flex flex-col items-center space-y-4">
                             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">

@@ -91,7 +91,7 @@ export function Sidebar({
                     <form action={logout}>
                         <button
                             type="submit"
-                            className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 w-full"
+                            className="flex items-center px-4 py-3 text-xl text-gray-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-background w-full"
                         >
                             <span className="flex pl-0.5">
                                 <LogOut />
