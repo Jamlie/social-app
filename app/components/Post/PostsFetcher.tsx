@@ -32,12 +32,14 @@ type PostsFetcherProps = {
     currentUser: string;
     visitedUserId?: string;
     location: "home" | "profile";
+    currentUserId: string;
 };
 
 export function PostsFetcher({
     visitedUserId,
     location,
     currentUser,
+    currentUserId,
 }: PostsFetcherProps) {
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -105,6 +107,7 @@ export function PostsFetcher({
                         reposts={post.reposts}
                         likes={post.likes}
                         isLiked={isLiked ? true : false}
+                        currentUserID={currentUserId}
                     />
                 );
             })}

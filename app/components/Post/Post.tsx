@@ -31,6 +31,7 @@ type PostsProps = {
     replies?: number;
     verified?: boolean;
     isLiked?: boolean;
+    currentUserID: string;
 };
 
 export function Post(props: PostsProps) {
@@ -170,7 +171,12 @@ export function Post(props: PostsProps) {
                             </button>
                         </div>
 
-                        {showComments && <CommentSection postId={props.id} />}
+                        {showComments && (
+                            <CommentSection
+                                postId={props.id}
+                                currentUserId={props.currentUserID}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

@@ -62,6 +62,7 @@ export default async function Home() {
                     <PostsFetcher
                         location="home"
                         currentUser={user.customClaims.username}
+                        currentUserId={user.uid}
                     />
                 </main>
             </div>

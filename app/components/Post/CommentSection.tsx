@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import {
     addDoc,
     collection,
@@ -25,7 +24,13 @@ type Comment = {
     user?: User;
 };
 
-export function CommentSection({ postId }: { postId: string }) {
+export function CommentSection({
+    postId,
+    currentUserId,
+}: {
+    postId: string;
+    currentUserId: string;
+}) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,12 +64,7 @@ export function CommentSection({ postId }: { postId: string }) {
 
     const handleSubmitComment = async (e: React.FormEvent) => {
         e.preventDefault();
-        const auth = getAuth(app);
-        console.log(auth.currentUser);
-        const userReference = doc(
-            collection(db, "users"),
-            auth.currentUser?.uid,
-        );
+        const userReference = doc(collection(db, "users"), currentUserId);
         if (!newComment.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
