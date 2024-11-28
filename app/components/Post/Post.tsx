@@ -170,12 +170,7 @@ export function Post(props: PostsProps) {
                             </button>
                         </div>
 
-                        {showComments && (
-                            <CommentSection
-                                postId={props.id}
-                                userRef={props.userRef}
-                            />
-                        )}
+                        {showComments && <CommentSection postId={props.id} />}
                     </div>
                 </div>
             </div>

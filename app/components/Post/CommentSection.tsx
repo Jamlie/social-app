@@ -3,7 +3,6 @@ import {
     addDoc,
     collection,
     doc,
-    DocumentReference,
     getDoc,
     getFirestore,
     onSnapshot,
@@ -19,7 +18,6 @@ import { User } from "~/app/utils/types";
 type Comment = {
     id: string;
     content: string;
-    userRef: DocumentReference;
     timestamp: {
         seconds: number;
         nanoseconds: number;
@@ -27,13 +25,7 @@ type Comment = {
     user?: User;
 };
 
-export function CommentSection({
-    postId,
-    userRef,
-}: {
-    postId: string;
-    userRef: DocumentReference;
-}) {
+export function CommentSection({ postId }: { postId: string }) {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);

@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { database } from "~/app/lib/database";
 
 export async function POST(request: NextRequest) {
+    if (request.method === "OPTIONS") {
+        return NextResponse.json(
+            {},
+            {
+                headers: {
+                    "Access-Control-Allow-Origin":
+                        "https://jam-social-app.netlify.app",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                    "Access-Control-Allow-Headers":
+                        "Authorization, Content-Type",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+            },
+        );
+    }
+
     const auth = database.auth;
 
     const authHeader = request.headers.get("Authorization");
