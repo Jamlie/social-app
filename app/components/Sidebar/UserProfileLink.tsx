@@ -64,7 +64,7 @@ export function UserProfileLink({ userId }: { userId: string }) {
     return (
         <Link
             href={`/${userData.username}`}
-            className="flex items-center w-full rounded-full p-3 mt-4 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="flex items-center w-full rounded-full p-3 mt-4 hover:bg-gray-100 dark:hover:bg-background"
             type="button"
         >
             <img
