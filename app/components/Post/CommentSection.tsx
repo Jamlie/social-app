@@ -1,6 +1,8 @@
+import { getAuth } from "firebase/auth";
 import {
     addDoc,
     collection,
+    doc,
     DocumentReference,
     getDoc,
     getFirestore,
@@ -65,6 +67,12 @@ export function CommentSection({
 
     const handleSubmitComment = async (e: React.FormEvent) => {
         e.preventDefault();
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const userReference = doc(
+            collection(db, "users"),
+            auth.currentUser?.uid,
+        );
         if (!newComment.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
@@ -72,7 +80,7 @@ export function CommentSection({
             const commentsRef = collection(db, "posts", postId, "comments");
             await addDoc(commentsRef, {
                 content: newComment,
-                userRef: userRef,
+                userRef: userReference,
                 timestamp: new Date(),
             });
             setNewComment("");
@@ -121,7 +129,7 @@ export function CommentSection({
                                 <span className="text-gray-400">·</span>
                                 <span className="text-gray-400">
                                     {new Date(
-                                        comment.timestamp.seconds,
+                                        comment.timestamp.seconds * 1000,
                                     ).toLocaleString()}
                                 </span>
                             </div>
