@@ -60,7 +60,7 @@ export function CommentSection({ postId }: { postId: string }) {
     const handleSubmitComment = async (e: React.FormEvent) => {
         e.preventDefault();
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        console.log(auth.currentUser);
         const userReference = doc(
             collection(db, "users"),
             auth.currentUser?.uid,
