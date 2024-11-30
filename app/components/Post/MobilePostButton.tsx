@@ -2,7 +2,7 @@
 import { Images } from "lucide-react";
 import { useState, useRef } from "react";
 
-export function PostModal() {
+export function MobilePostModal() {
     const [openModal, setOpenModal] = useState(false);
     const [postError, setPostError] = useState("");
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -83,9 +83,21 @@ export function PostModal() {
         <>
             <button
                 onClick={() => setOpenModal(true)}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-full py-3 px-4 font-bold text-lg mt-4"
+                className="fixed right-4 bottom-20 md:hidden bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 shadow-lg"
             >
-                Post
+                <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    ></path>
+                </svg>
             </button>
             {openModal && (
                 <div
@@ -93,23 +105,37 @@ export function PostModal() {
                     onClick={() => setOpenModal(false)}
                 >
                     <div
-                        className="bg-white dark:bg-foreground p-6 rounded-lg shadow-lg w-11/12 max-w-lg"
+                        className="bg-white dark:bg-foreground w-full h-full flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <button
-                            onClick={() => setOpenModal(false)}
-                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 float-right"
+                        <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+                            <button
+                                onClick={() => setOpenModal(false)}
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            >
+                                Cancel
+                            </button>
+                            <h2 className="text-xl font-bold dark:text-white">
+                                Compose new Post
+                            </h2>
+                            <button
+                                type="submit"
+                                form="mobilePostForm"
+                                className="text-blue-500 hover:text-blue-600 font-semibold"
+                            >
+                                Post
+                            </button>
+                        </div>
+                        <form
+                            id="mobilePostForm"
+                            onSubmit={handleFormPost}
+                            method="POST"
+                            className="flex-grow flex flex-col p-4"
                         >
-                            &times;
-                        </button>
-                        <h2 className="text-2xl font-bold mb-4 dark:text-white">
-                            Compose new Post
-                        </h2>
-                        <form onSubmit={handleFormPost} method="POST">
                             <textarea
                                 name="content"
-                                rows={4}
-                                className="w-full text-black dark:text-white p-2 border border-gray-300 rounded-md dark:border-gray-700 dark:bg-background"
+                                rows={6}
+                                className="w-full flex-grow text-black dark:text-white p-2 border-none resize-none focus:outline-none"
                                 placeholder="What's happening?"
                                 required
                             ></textarea>
@@ -121,13 +147,13 @@ export function PostModal() {
                                     onChange={handleImageSelect}
                                     accept="image/jpeg,image/png,image/gif"
                                     className="hidden"
-                                    id="imageUpload"
+                                    id="mobileImageUpload"
                                 />
                                 <label
-                                    htmlFor="imageUpload"
+                                    htmlFor="mobileImageUpload"
                                     className="cursor-pointer mr-2 text-blue-500 hover:text-blue-600"
                                 >
-                                    <Images size={20} />
+                                    <Images size={24} />
                                 </label>
 
                                 {selectedImage && (
@@ -147,34 +173,27 @@ export function PostModal() {
                             </div>
 
                             {imagePreview && (
-                                <div className="mt-4">
+                                <div className="mt-4 relative">
                                     <img
                                         src={imagePreview}
                                         alt="Preview"
-                                        className="max-w-full h-40 object-cover rounded-md"
+                                        className="w-full h-64 object-cover rounded-md"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={handleImageRemove}
+                                        className="absolute top-2 right-2 bg-gray-700 bg-opacity-50 text-white rounded-full p-1"
+                                    >
+                                        ✖
+                                    </button>
                                 </div>
                             )}
 
-                            <span className="text-red-600 text-sm block mt-2">
-                                {postError}
-                            </span>
-
-                            <div className="flex justify-end mt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setOpenModal(false)}
-                                    className="mr-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                >
-                                    Post
-                                </button>
-                            </div>
+                            {postError && (
+                                <span className="text-red-600 text-sm block mt-2">
+                                    {postError}
+                                </span>
+                            )}
                         </form>
                     </div>
                 </div>

@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { database } from "./lib/database";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { DecodedIdToken, UserRecord } from "firebase-admin/auth";
+import { MobileSidebar } from "./components/Sidebar/MobileSidebar";
+import { MobilePostModal } from "./components/Post/MobilePostButton";
 
 export default async function RootLayout({
     children,
@@ -36,7 +38,15 @@ export default async function RootLayout({
                             />
                         </div>
 
+                        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 md:hidden">
+                            <MobileSidebar
+                                username={user!.customClaims!.username}
+                            />
+                        </div>
+
                         {children}
+
+                        <MobilePostModal />
                     </div>
                 )}
             </body>
