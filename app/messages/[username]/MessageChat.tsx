@@ -47,7 +47,7 @@ export function MessageChat({
     }
 
     return (
-        <div className="flex flex-col h-screen dark:bg-foreground">
+        <div className="flex flex-col h-screen dark:bg-black">
             <div className="p-4 border-b border-gray-200 flex items-center">
                 <div className="mr-4 p-2 rounded-full hover:bg-gray-100 hover:dark:bg-gray-700 focus:outline-none lg:hidden">
                     <Link href="/messages">

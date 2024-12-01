@@ -6,7 +6,6 @@ import { MessagesSidebar } from "~/app/messages/MessagesSidebar";
 import { MobileSidebar } from "../Sidebar/MobileSidebar";
 import { MobilePostModal } from "../Post/MobilePostButton";
 import { useChatExtensions } from "~/app/ContextProvider/useChatExtensions";
-import { useEffect, useState } from "react";
 
 type Props = {
     userId: string;
@@ -44,7 +43,7 @@ export function SidebarController({
             )}
 
             {isMessagesRoute && (
-                <div className="w-screen h-screen lg:block lg:w-80 border-l border-gray-200 dark:border-gray-800">
+                <div className="xs:w-screen md:w-80 h-screen lg:block lg:w-80 border-l border-gray-200 dark:border-gray-800">
                     <MessagesSidebar />
                 </div>
             )}
