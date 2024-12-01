@@ -4,7 +4,8 @@ import { LoginForm } from "./LoginForm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { database } from "~/app/lib/database";
-import { DarkModeToggle } from "../components/Sidebar/DarkModeToggle";
+import { DarkModeToggle } from "~/app/components/Sidebar/DarkModeToggle";
+import { ScrollControl } from "~/app/components/ScrollBar/ScrollControl";
 
 export const metadata: Metadata = {
     title: "Login",
@@ -25,12 +26,13 @@ export default async function Login() {
 
     return (
         <>
-            <div className="flex justify-end bg-gray-50 dark:bg-background">
-                <DarkModeToggle />
-            </div>
+            <ScrollControl disableScroll={true} />
 
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 dark:bg-background">
                 <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-foreground">
+                    <div className="flex justify-center items-center">
+                        <DarkModeToggle />
+                    </div>
                     <div className="space-y-1 mb-6">
                         <h2 className="text-2xl font-bold text-black dark:text-white">
                             Welcome back
