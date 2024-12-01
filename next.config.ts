@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
                 protocol: "https",
                 hostname: "cdn.bsky.app",
             },
+            {
+                protocol: "https",
+                hostname: "encrypted-tbn0.gstatic.com",
+            },
         ],
     },
     async headers() {

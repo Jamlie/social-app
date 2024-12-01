@@ -101,7 +101,7 @@ export function MobilePostModal() {
             </button>
             {openModal && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-background bg-opacity-50"
                     onClick={() => setOpenModal(false)}
                 >
                     <div
@@ -135,7 +135,7 @@ export function MobilePostModal() {
                             <textarea
                                 name="content"
                                 rows={6}
-                                className="w-full flex-grow text-black dark:text-white p-2 border-none resize-none focus:outline-none"
+                                className="w-full flex-grow text-black dark:text-white p-2 border-none resize-none focus:outline-none bg-white dark:bg-foreground"
                                 placeholder="What's happening?"
                                 required
                             ></textarea>

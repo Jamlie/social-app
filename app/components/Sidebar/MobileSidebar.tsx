@@ -1,4 +1,4 @@
-import { Bookmark, Hash, House, LucideIcon, UserRound } from "lucide-react";
+import { Hash, House, LucideIcon, Mail, UserRound } from "lucide-react";
 import Link from "next/link";
 
 type SidebarLink = {
@@ -21,9 +21,9 @@ export function MobileSidebar({ username }: { username: string }) {
             name: "Explore",
         },
         {
-            href: "/bookmarks",
-            icon: Bookmark,
-            name: "Bookmarks",
+            href: "/messages",
+            icon: Mail,
+            name: "Messages",
         },
         {
             href: `/${username}`,
