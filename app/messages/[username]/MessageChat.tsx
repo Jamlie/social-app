@@ -28,7 +28,11 @@ export function MessageChat({
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const { openChat, closeChat } = useChatExtensions();
-    const scrollDownDiv = useRef<HTMLDivElement>();
+    const scrollDownDiv = useRef<HTMLDivElement>(null);
+
+    scrollDownDiv.current?.scrollIntoView({
+        behavior: "smooth",
+    });
 
     useEffect(() => {
         openChat();
