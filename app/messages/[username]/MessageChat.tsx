@@ -80,14 +80,14 @@ export function MessageChat({
         }
     }
 
-    const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    function handleTyping(e: React.ChangeEvent<HTMLInputElement>) {
         setNewMessage(e.target.value);
         if (e.target.value.trim()) {
             updateTypingStatus(currentUser, chatWithUID, true);
         } else {
             updateTypingStatus(currentUser, chatWithUID, false);
         }
-    };
+    }
 
     return (
         <div className="flex flex-col h-screen dark:bg-black">

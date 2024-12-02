@@ -11,8 +11,8 @@ import { useChatExtensions } from "../ContextProvider/useChatExtensions";
 
 async function fetchUsers() {
     const db = getFirestore(app);
-    const messagesQuery = query(collection(db, "users"));
-    const messagesSnapshot = await getDocs(messagesQuery);
+    const usersQuery = query(collection(db, "users"));
+    const messagesSnapshot = await getDocs(usersQuery);
 
     return messagesSnapshot.docs.map((doc) => {
         const data = doc.data() as User;
