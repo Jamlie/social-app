@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchMessages, Message, sendMessage } from "./chatUtils";
+import {
+    fetchMessages,
+    markMessagesAsRead,
+    Message,
+    sendMessage,
+} from "./chatUtils";
 import { ArrowLeft } from "lucide-react";
 import { useChatExtensions } from "~/app/ContextProvider/useChatExtensions";
 import Link from "next/link";
@@ -30,13 +35,21 @@ export function MessageChat({
     }, []);
 
     useEffect(() => {
-        const unsubscribe = fetchMessages(
+        const unsubscribeFetchMessages = fetchMessages(
             currentUser,
             chatWithUID,
             setMessages,
         );
 
-        return () => unsubscribe();
+        const unsubscribeMarkAsRead = markMessagesAsRead(
+            currentUser,
+            chatWithUID,
+        );
+
+        return () => {
+            unsubscribeFetchMessages();
+            unsubscribeMarkAsRead();
+        };
     }, [currentUser, chatWithUID]);
 
     async function handleSendMessage() {
@@ -76,7 +89,11 @@ export function MessageChat({
                     return (
                         <div
                             key={message.id}
-                            className={`flex ${message.sender === currentUser ? "justify-end" : "justify-start"}`}
+                            className={`flex ${
+                                message.sender === currentUser
+                                    ? "justify-end"
+                                    : "justify-start"
+                            }`}
                         >
                             <div
                                 className={`max-w-[70%] p-3 rounded-2xl ${

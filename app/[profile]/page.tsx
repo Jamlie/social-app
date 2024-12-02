@@ -138,7 +138,7 @@ export default async function Profile({
                                         currentUserRecord?.customClaims
                                             ?.username
                                     }
-                                    currentUserId={user.uid}
+                                    currentUserId={currentUserRecord?.uid!}
                                     visitedUserId={username}
                                     location="profile"
                                 />
