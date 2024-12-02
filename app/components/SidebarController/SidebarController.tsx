@@ -9,7 +9,6 @@ import { useChatExtensions } from "~/app/ContextProvider/useChatExtensions";
 import { useEffect, useState } from "react";
 import {
     collection,
-    getDocs,
     getFirestore,
     onSnapshot,
     query,

@@ -25,9 +25,8 @@ async function fetchUsersWithLastMessage(currentUserUID: string) {
     const usersData = await Promise.all(
         usersSnapshot.docs.map(async (doc) => {
             const userData = doc.data() as User;
-            const userId = doc.id; // Each user ID
+            const userId = doc.id;
 
-            // Initialize with null lastMessage
             const chatId = [currentUserUID, userId].sort().join("-");
             const messagesRef = collection(db, "chats", chatId, "messages");
             const lastMessageQuery = query(
@@ -77,6 +76,10 @@ export function MessagesSidebar({ userId }: { userId: string }) {
           }[]
         | null
     >(null);
+
+    useEffect(() => {
+        closeChat();
+    }, []);
 
     useEffect(() => {
         async function getUsers() {
