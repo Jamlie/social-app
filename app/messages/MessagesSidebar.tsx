@@ -9,6 +9,7 @@ import {
     getDocs,
     getFirestore,
     limit,
+    onSnapshot,
     orderBy,
     query,
 } from "firebase/firestore";
@@ -24,16 +25,18 @@ async function fetchUsersWithLastMessage(currentUserUID: string) {
     const usersData = await Promise.all(
         usersSnapshot.docs.map(async (doc) => {
             const userData = doc.data() as User;
-            const chatId = [currentUserUID, doc.id].sort().join("-");
+            const userId = doc.id; // Each user ID
 
+            // Initialize with null lastMessage
+            const chatId = [currentUserUID, userId].sort().join("-");
             const messagesRef = collection(db, "chats", chatId, "messages");
             const lastMessageQuery = query(
                 messagesRef,
                 orderBy("timestamp", "desc"),
                 limit(1),
             );
-            const lastMessageSnapshot = await getDocs(lastMessageQuery);
 
+            const lastMessageSnapshot = await getDocs(lastMessageQuery);
             let lastMessage = null;
             if (!lastMessageSnapshot.empty) {
                 const messageDoc = lastMessageSnapshot.docs[0];
@@ -47,7 +50,7 @@ async function fetchUsersWithLastMessage(currentUserUID: string) {
             }
 
             return {
-                id: doc.id,
+                id: userId,
                 pfp: userData.pfp,
                 name: userData.name,
                 username: userData.username,
@@ -55,13 +58,11 @@ async function fetchUsersWithLastMessage(currentUserUID: string) {
             };
         }),
     );
-
     return usersData;
 }
 
 export function MessagesSidebar({ userId }: { userId: string }) {
     const { closeChat } = useChatExtensions();
-
     const [conversations, setConversations] = useState<
         | {
               id: string;
@@ -87,6 +88,49 @@ export function MessagesSidebar({ userId }: { userId: string }) {
         getUsers();
         closeChat();
     }, [userId]);
+
+    useEffect(() => {
+        const unsubscribeFromChats = conversations?.map((conversation) => {
+            const db = getFirestore(app);
+            const chatId = [userId, conversation.id].sort().join("-");
+            const messagesRef = collection(db, "chats", chatId, "messages");
+            const q = query(
+                messagesRef,
+                orderBy("timestamp", "desc"),
+                limit(1),
+            );
+
+            return onSnapshot(q, (querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    const messageDoc = querySnapshot.docs[0];
+                    const lastMessage = {
+                        text: messageDoc.data().text,
+                        timestamp: new Date(
+                            messageDoc.data().timestamp.seconds * 1000,
+                        ),
+                        sender: messageDoc.data().sender,
+                    };
+
+                    setConversations((prevConversations) => {
+                        if (!prevConversations) {
+                            return [];
+                        }
+
+                        return prevConversations.map((conv) => {
+                            if (conv.id === conversation.id) {
+                                return { ...conv, lastMessage };
+                            }
+                            return conv;
+                        });
+                    });
+                }
+            });
+        });
+
+        return () => {
+            unsubscribeFromChats?.forEach((unsubscribe) => unsubscribe());
+        };
+    }, [conversations, userId]);
 
     return (
         <div className="flex flex-col h-screen">
