@@ -3,14 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import {
     fetchMessages,
+    listenForTypingStatus,
     markMessagesAsRead,
     Message,
     sendMessage,
+    updateTypingStatus,
 } from "./chatUtils";
-import { ArrowLeft } from "lucide-react";
 import { useChatExtensions } from "~/app/ContextProvider/useChatExtensions";
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 
 type MessageChatProps = {
     currentUser: string;
@@ -27,6 +29,7 @@ export function MessageChat({
 }: MessageChatProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
     const { openChat, closeChat } = useChatExtensions();
     const scrollDownDiv = useRef<HTMLDivElement>(null);
 
@@ -52,9 +55,16 @@ export function MessageChat({
             chatWithUID,
         );
 
+        const unsubscribeTypingStatus = listenForTypingStatus(
+            currentUser,
+            chatWithUID,
+            setIsTyping,
+        );
+
         return () => {
             unsubscribeFetchMessages();
             unsubscribeMarkAsRead();
+            unsubscribeTypingStatus();
         };
     }, [currentUser, chatWithUID]);
 
@@ -63,8 +73,18 @@ export function MessageChat({
             await sendMessage(currentUser, chatWithUID, newMessage);
             setNewMessage("");
             scrollDownDiv.current?.scrollIntoView({ behavior: "smooth" });
+            updateTypingStatus(currentUser, chatWithUID, false);
         }
     }
+
+    const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewMessage(e.target.value);
+        if (e.target.value.trim()) {
+            updateTypingStatus(currentUser, chatWithUID, true);
+        } else {
+            updateTypingStatus(currentUser, chatWithUID, false);
+        }
+    };
 
     return (
         <div className="flex flex-col h-screen dark:bg-black">
@@ -96,32 +116,30 @@ export function MessageChat({
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.map((message) => {
-                    return (
+                {messages.map((message) => (
+                    <div
+                        key={message.id}
+                        className={`flex ${
+                            message.sender === currentUser
+                                ? "justify-end"
+                                : "justify-start"
+                        }`}
+                    >
                         <div
-                            key={message.id}
-                            className={`flex ${
+                            className={`max-w-[70%] p-3 rounded-2xl ${
                                 message.sender === currentUser
-                                    ? "justify-end"
-                                    : "justify-start"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-200 dark:bg-gray-700 dark:text-gray-100"
                             }`}
                         >
-                            <div
-                                className={`max-w-[70%] p-3 rounded-2xl ${
-                                    message.sender === currentUser
-                                        ? "bg-blue-500 text-white"
-                                        : "bg-gray-200 dark:bg-gray-700 dark:text-gray-100"
-                                }`}
-                            >
-                                {message.text}
-                                <div className="text-xs text-opacity-70 mt-1 text-right">
-                                    {formatMessageTime(message.timestamp)}
-                                </div>
+                            {message.text}
+                            <div className="text-xs text-opacity-70 mt-1 text-right">
+                                {formatMessageTime(message.timestamp)}
                             </div>
                         </div>
-                    );
-                })}
-
+                    </div>
+                ))}
+                {isTyping && <TypingIndicator userName={chatWithName} />}
                 <div ref={scrollDownDiv}></div>
             </div>
 
@@ -130,7 +148,7 @@ export function MessageChat({
                     type="text"
                     placeholder="Start a message"
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={handleTyping}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             e.preventDefault();
@@ -165,3 +183,22 @@ function formatMessageTime(timestamp: Date): string {
         day: "numeric",
     });
 }
+
+function TypingIndicator({ userName }: { userName: string }) {
+    return (
+        <div className="flex items-center space-x-2 p-3 bg-gray-100 dark:bg-gray-700 rounded-xl max-w-fit">
+            <div className="flex items-center">
+                <span className="text-sm text-gray-600 dark:text-gray-300 mr-2">
+                    {userName} is typing
+                </span>
+                <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce animation-delay-0"></div>
+                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce animation-delay-100"></div>
+                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce animation-delay-200"></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default TypingIndicator;

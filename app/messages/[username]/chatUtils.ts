@@ -97,3 +97,34 @@ export function markMessagesAsRead(currentUser: string, chatWithUID: string) {
 
     return unsubscribe;
 }
+
+export function updateTypingStatus(
+    currentUser: string,
+    chatWithUID: string,
+    isTyping: boolean,
+) {
+    const db = getFirestore(app);
+    const chatId = [currentUser, chatWithUID].sort().join("-");
+
+    const typingRef = doc(db, "chats", chatId, "typingStatus", currentUser);
+    setDoc(typingRef, { isTyping }, { merge: true });
+}
+
+export function listenForTypingStatus(
+    currentUser: string,
+    chatWithUID: string,
+    setIsTyping: (isTyping: boolean) => void,
+) {
+    const db = getFirestore(app);
+    const chatId = [currentUser, chatWithUID].sort().join("-");
+
+    const typingRef = doc(db, "chats", chatId, "typingStatus", chatWithUID);
+    const unsubscribe = onSnapshot(typingRef, (docSnapshot) => {
+        const data = docSnapshot.data();
+        if (data) {
+            setIsTyping(data.isTyping);
+        }
+    });
+
+    return unsubscribe;
+}
