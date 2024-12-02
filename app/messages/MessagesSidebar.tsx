@@ -4,28 +4,62 @@ import { Search } from "lucide-react";
 import { User } from "~/app/utils/types";
 import Link from "next/link";
 import Image from "next/image";
-import { collection, getDocs, getFirestore, query } from "firebase/firestore";
+import {
+    collection,
+    getDocs,
+    getFirestore,
+    limit,
+    orderBy,
+    query,
+} from "firebase/firestore";
 import { app } from "../lib/firebaseClient";
 import { useEffect, useState } from "react";
 import { useChatExtensions } from "../ContextProvider/useChatExtensions";
 
-async function fetchUsers() {
+async function fetchUsersWithLastMessage(currentUserUID: string) {
     const db = getFirestore(app);
     const usersQuery = query(collection(db, "users"));
-    const messagesSnapshot = await getDocs(usersQuery);
+    const usersSnapshot = await getDocs(usersQuery);
 
-    return messagesSnapshot.docs.map((doc) => {
-        const data = doc.data() as User;
-        return {
-            id: doc.id,
-            pfp: data.pfp,
-            name: data.name,
-            username: data.username,
-        };
-    });
+    const usersData = await Promise.all(
+        usersSnapshot.docs.map(async (doc) => {
+            const userData = doc.data() as User;
+            const chatId = [currentUserUID, doc.id].sort().join("-");
+
+            const messagesRef = collection(db, "chats", chatId, "messages");
+            const lastMessageQuery = query(
+                messagesRef,
+                orderBy("timestamp", "desc"),
+                limit(1),
+            );
+            const lastMessageSnapshot = await getDocs(lastMessageQuery);
+
+            let lastMessage = null;
+            if (!lastMessageSnapshot.empty) {
+                const messageDoc = lastMessageSnapshot.docs[0];
+                lastMessage = {
+                    text: messageDoc.data().text,
+                    timestamp: new Date(
+                        messageDoc.data().timestamp.seconds * 1000,
+                    ),
+                    sender: messageDoc.data().sender,
+                };
+            }
+
+            return {
+                id: doc.id,
+                pfp: userData.pfp,
+                name: userData.name,
+                username: userData.username,
+                lastMessage,
+            };
+        }),
+    );
+
+    return usersData;
 }
 
-export function MessagesSidebar() {
+export function MessagesSidebar({ userId }: { userId: string }) {
     const { closeChat } = useChatExtensions();
 
     const [conversations, setConversations] = useState<
@@ -34,18 +68,25 @@ export function MessagesSidebar() {
               pfp: string;
               name: string;
               username: string;
+              lastMessage: {
+                  text: string;
+                  timestamp: Date;
+                  sender: string;
+              } | null;
           }[]
         | null
     >(null);
 
     useEffect(() => {
         async function getUsers() {
-            setConversations(await fetchUsers());
+            const usersWithLastMessages =
+                await fetchUsersWithLastMessage(userId);
+            setConversations(usersWithLastMessages);
         }
 
         getUsers();
         closeChat();
-    });
+    }, [userId]);
 
     return (
         <div className="flex flex-col h-screen">
@@ -87,11 +128,39 @@ export function MessagesSidebar() {
                                 <h3 className="font-bold">
                                     {conversation.name}
                                 </h3>
+                                {conversation.lastMessage && (
+                                    <span className="text-sm text-gray-500">
+                                        {formatMessageTime(
+                                            new Date(
+                                                conversation.lastMessage.timestamp,
+                                            ),
+                                        )}
+                                    </span>
+                                )}
                             </div>
+                            <p className="text-sm text-gray-600 dark:text-gray-500 truncate">
+                                {conversation.lastMessage?.text ||
+                                    "No messages yet"}
+                            </p>
                         </div>
                     </Link>
                 ))}
             </div>
         </div>
     );
+}
+
+function formatMessageTime(timestamp: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - timestamp.getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (diff < 60000) return "Now";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
+
+    return timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+    });
 }

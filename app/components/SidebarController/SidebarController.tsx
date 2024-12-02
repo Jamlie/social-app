@@ -65,7 +65,7 @@ export function SidebarController({
 
             {isMessagesRoute && (
                 <div className="xs:w-screen md:w-80 h-screen lg:block lg:w-80 border-l border-gray-200 dark:border-gray-800">
-                    <MessagesSidebar />
+                    <MessagesSidebar userId={userId} />
                 </div>
             )}
 
@@ -75,7 +75,7 @@ export function SidebarController({
                         !isOpened ? "hidden" : ""
                     } w-screen h-screen lg:block lg:w-80 border-l border-gray-200 dark:border-gray-800`}
                 >
-                    <MessagesSidebar />
+                    <MessagesSidebar userId={userId} />
                 </div>
             )}
 
