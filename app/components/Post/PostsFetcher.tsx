@@ -41,7 +41,6 @@ export function PostsFetcher({
     currentUser,
     currentUserId,
 }: PostsFetcherProps) {
-    console.log(currentUserId);
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
 
