@@ -32,6 +32,7 @@ export function MessageChat({
     const [isTyping, setIsTyping] = useState(false);
     const { openChat, closeChat } = useChatExtensions();
     const scrollDownDiv = useRef<HTMLDivElement>(null);
+    const textInputRef = useRef<HTMLInputElement>(null);
 
     scrollDownDiv.current?.scrollIntoView({
         behavior: "smooth",
@@ -39,6 +40,8 @@ export function MessageChat({
 
     useEffect(() => {
         openChat();
+
+        textInputRef.current?.focus();
 
         return () => closeChat();
     }, []);
@@ -156,7 +159,7 @@ export function MessageChat({
                         }
                     }}
                     className="flex-1 px-4 py-2 rounded-full bg-gray-100 dark:text-white dark:bg-background focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    autoFocus
+                    ref={textInputRef}
                 />
                 <button
                     onClick={handleSendMessage}
