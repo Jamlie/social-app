@@ -10,6 +10,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { useChatExtensions } from "~/app/ContextProvider/useChatExtensions";
 import Link from "next/link";
+import Image from "next/image";
 
 type MessageChatProps = {
     currentUser: string;
@@ -67,13 +68,17 @@ export function MessageChat({
                         <ArrowLeft className="dark:text-white" />
                     </Link>
                 </div>
-                <img
-                    src={chatWithPic}
-                    alt="User Profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full mr-4"
-                />
+                <div className="avatar mr-4">
+                    <div className="w-12 h-12 rounded-full">
+                        <Image
+                            src={chatWithPic}
+                            alt="User Profile"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                        />
+                    </div>
+                </div>
                 <div>
                     <h2 className="font-bold dark:text-gray-200">
                         {chatWithName}

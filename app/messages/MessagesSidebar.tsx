@@ -70,13 +70,17 @@ export function MessagesSidebar() {
                         className="flex p-4 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 border-b border-gray-200 dark:border-gray-800"
                     >
                         <div className="relative mr-4">
-                            <Image
-                                src={conversation.pfp}
-                                alt={conversation.name}
-                                width={48}
-                                height={48}
-                                className="rounded-full"
-                            />
+                            <div className="avatar">
+                                <div className="w-12 h-12 rounded-full">
+                                    <Image
+                                        src={conversation.pfp}
+                                        alt={conversation.name}
+                                        width={48}
+                                        height={48}
+                                        className="rounded-full"
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="flex justify-between items-center">
