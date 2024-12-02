@@ -142,7 +142,7 @@ export function MessageChat({
                 />
                 <button
                     onClick={handleSendMessage}
-                    className="text-blue-500 hover:bg-blue-100 rounded-full p-2"
+                    className="text-blue-500 hover:bg-blue-100 dark:hover:bg-background rounded-full p-2"
                 >
                     Send
                 </button>

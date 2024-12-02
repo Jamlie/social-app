@@ -88,39 +88,40 @@ export function Post(props: PostsProps) {
 
     return (
         <>
-            <div className="max-w-xl mx-auto bg-white dark:bg-background border border-gray-200 dark:border-gray-800 rounded-lg p-4 my-4">
+            <div className="xs:w-30 max-w-xl mx-auto bg-white dark:bg-background border border-gray-200 dark:border-gray-800 rounded-lg p-4 my-4">
                 <div className="flex items-start space-x-3">
                     <img
                         src={user?.pfp || getDefaultPfp()}
                         alt={`${user?.name}'s avatar`}
                         onClick={() => router.push(`/${user?.username}`)}
-                        className="w-12 h-12 rounded-full cursor-pointer"
+                        className={`w-12 h-12 rounded-full cursor-pointer`}
                     />
 
                     <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                            <div className="flex items-center">
+                        <div className="flex items-center justify-between">
+                            <span className="flex flex-col">
+                                <div className="flex items-center">
+                                    <span
+                                        className="font-bold text-black dark:text-white cursor-pointer"
+                                        onClick={() =>
+                                            router.push(`/${user?.username}`)
+                                        }
+                                    >
+                                        {truncateName(user?.name || "", 20)}
+                                    </span>
+                                    {props.verified ? <Verified /> : ""}
+                                </div>
                                 <span
-                                    className="font-bold text-black dark:text-white cursor-pointer"
                                     onClick={() =>
                                         router.push(`/${user?.username}`)
                                     }
+                                    className="text-[0.9rem] text-black dark:text-gray-400 cursor-pointer"
                                 >
-                                    {user?.name}
+                                    @{user?.username}
                                 </span>
-                                {props.verified ? <Verified /> : ""}
-                            </div>
-                            <span
-                                onClick={() =>
-                                    router.push(`/${user?.username}`)
-                                }
-                                className="font-bold text-black dark:text-white cursor-pointer"
-                            >
-                                @{user?.username}
                             </span>
-                            <span className="text-gray-400">·</span>
-                            <span className="text-gray-400">
-                                {props.timestamp}
+                            <span className="text-gray-400 text-[0.9rem] ml-auto">
+                                {formatMessageTime(new Date(props.timestamp))}
                             </span>
                         </div>
 
@@ -190,4 +191,23 @@ export function Post(props: PostsProps) {
             )}
         </>
     );
+}
+
+function truncateName(name: string, maxLength: number = 12): string {
+    return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
+}
+
+function formatMessageTime(timestamp: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - timestamp.getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (diff < 60000) return "Now";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
+
+    return timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+    });
 }

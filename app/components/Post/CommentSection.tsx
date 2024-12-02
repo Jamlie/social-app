@@ -9,6 +9,7 @@ import {
     query,
 } from "firebase/firestore";
 import { Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { app } from "~/app/lib/firebaseClient";
 import { getDefaultPfp } from "~/app/utils/profile";
@@ -31,6 +32,7 @@ export function CommentSection({
     postId: string;
     currentUserId: string;
 }) {
+    const router = useRouter();
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,20 +111,45 @@ export function CommentSection({
                             src={comment.user?.pfp || getDefaultPfp()}
                             alt={`${comment.user?.name}'s avatar`}
                             className="w-8 h-8 rounded-full"
+                            onClick={() =>
+                                router.push(`/${comment.user?.username}`)
+                            }
                         />
                         <div className="flex-1">
-                            <div className="flex items-center space-x-2">
-                                <span className="font-bold text-black dark:text-white">
-                                    {comment.user?.name}
+                            <div className="flex items-center justify-between">
+                                <span className="flex flex-col">
+                                    <div className="flex items-center">
+                                        <span
+                                            className="font-bold text-black dark:text-white cursor-pointer"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/${comment.user?.username}`,
+                                                )
+                                            }
+                                        >
+                                            {truncateName(
+                                                comment.user?.name || "",
+                                                16,
+                                            )}
+                                        </span>
+                                    </div>
+                                    <span
+                                        onClick={() =>
+                                            router.push(
+                                                `/${comment.user?.username}`,
+                                            )
+                                        }
+                                        className="text-[0.9rem] text-black dark:text-gray-400 cursor-pointer"
+                                    >
+                                        @{comment.user?.username}
+                                    </span>
                                 </span>
-                                <span className="text-gray-400">
-                                    @{comment.user?.username}
-                                </span>
-                                <span className="text-gray-400">·</span>
-                                <span className="text-gray-400">
-                                    {new Date(
-                                        comment.timestamp.seconds * 1000,
-                                    ).toLocaleString()}
+                                <span className="text-gray-400 mr-2">
+                                    {formatMessageTime(
+                                        new Date(
+                                            comment.timestamp.seconds * 1000,
+                                        ),
+                                    )}
                                 </span>
                             </div>
                             <p className="text-black dark:text-white mt-1">
@@ -134,4 +161,23 @@ export function CommentSection({
             </div>
         </div>
     );
+}
+
+function truncateName(name: string, maxLength: number = 12): string {
+    return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
+}
+
+function formatMessageTime(timestamp: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - timestamp.getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (diff < 60000) return "Now";
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
+
+    return timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+    });
 }

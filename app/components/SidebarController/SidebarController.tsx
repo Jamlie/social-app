@@ -56,7 +56,10 @@ export function SidebarController({
 
             {(isMessagesRoute || !isChatRoute) && (
                 <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 md:hidden">
-                    <MobileSidebar username={username} />
+                    <MobileSidebar
+                        username={username}
+                        unreadMessages={unreadCount}
+                    />
                 </div>
             )}
 
