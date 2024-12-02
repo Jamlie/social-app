@@ -142,7 +142,7 @@ export function MessageChat({
                         </div>
                     </div>
                 ))}
-                {isTyping && <TypingIndicator userName={chatWithName} />}
+                {isTyping && <TypingIndicator />}
                 <div ref={scrollDownDiv}></div>
             </div>
 
@@ -187,13 +187,10 @@ function formatMessageTime(timestamp: Date): string {
     });
 }
 
-function TypingIndicator({ userName }: { userName: string }) {
+function TypingIndicator() {
     return (
         <div className="flex items-center space-x-2 p-3 bg-gray-100 dark:bg-gray-700 rounded-xl max-w-fit">
             <div className="flex items-center">
-                <span className="text-sm text-gray-600 dark:text-gray-300 mr-2">
-                    {userName} is typing
-                </span>
                 <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce animation-delay-0"></div>
                     <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce animation-delay-100"></div>
@@ -203,5 +200,3 @@ function TypingIndicator({ userName }: { userName: string }) {
         </div>
     );
 }
-
-export default TypingIndicator;
