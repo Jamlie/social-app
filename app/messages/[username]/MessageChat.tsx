@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     fetchMessages,
     markMessagesAsRead,
@@ -28,6 +28,7 @@ export function MessageChat({
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const { openChat, closeChat } = useChatExtensions();
+    const scrollDownDiv = useRef<HTMLDivElement>();
 
     useEffect(() => {
         openChat();
@@ -57,6 +58,7 @@ export function MessageChat({
         if (newMessage.trim()) {
             await sendMessage(currentUser, chatWithUID, newMessage);
             setNewMessage("");
+            scrollDownDiv.current?.scrollIntoView({ behavior: "smooth" });
         }
     }
 
@@ -115,6 +117,8 @@ export function MessageChat({
                         </div>
                     );
                 })}
+
+                <div ref={scrollDownDiv}></div>
             </div>
 
             <div className="p-4 border-t border-gray-200 flex items-center space-x-2">
