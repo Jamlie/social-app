@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { app } from "~/app/lib/firebaseClient";
 import { Post } from "./Post";
+import { PostSkeleton } from "./PostSkeleton";
 
 type PostData = {
     postID: string;
@@ -85,7 +86,13 @@ export function PostsFetcher({
     }, [visitedUserId, location]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div>
+                <PostSkeleton />
+                <PostSkeleton />
+                <PostSkeleton />
+            </div>
+        );
     }
 
     return (
