@@ -12,6 +12,7 @@ import { Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { app } from "~/app/lib/firebaseClient";
+import { formatMessageTime } from "~/app/utils/date";
 import { getDefaultPfp } from "~/app/utils/profile";
 import { User } from "~/app/utils/types";
 
@@ -165,19 +166,4 @@ export function CommentSection({
 
 function truncateName(name: string, maxLength: number = 12): string {
     return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
-}
-
-function formatMessageTime(timestamp: Date): string {
-    const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (diff < 60000) return "Now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
-    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
-
-    return timestamp.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-    });
 }

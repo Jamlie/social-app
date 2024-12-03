@@ -16,6 +16,7 @@ import {
 import { app } from "../lib/firebaseClient";
 import { useEffect, useState } from "react";
 import { useChatExtensions } from "../ContextProvider/useChatExtensions";
+import { formatMessageTime } from "../utils/date";
 
 async function fetchUsersWithLastMessage(currentUserUID: string) {
     const db = getFirestore(app);
@@ -191,19 +192,4 @@ export function MessagesSidebar({ userId }: { userId: string }) {
             </div>
         </div>
     );
-}
-
-function formatMessageTime(timestamp: Date): string {
-    const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (diff < 60000) return "Now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
-    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
-
-    return timestamp.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-    });
 }

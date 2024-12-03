@@ -19,6 +19,7 @@ import { getDefaultPfp } from "~/app/utils/profile";
 import { CommentSection } from "./CommentSection";
 import NextImage from "next/image";
 import { ImagePreview } from "./ImagePreview";
+import { formatMessageTime } from "~/app/utils/date";
 
 type PostsProps = {
     id: string;
@@ -195,19 +196,4 @@ export function Post(props: PostsProps) {
 
 function truncateName(name: string, maxLength: number = 12): string {
     return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
-}
-
-function formatMessageTime(timestamp: Date): string {
-    const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (diff < 60000) return "Now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
-    if (diff < oneDay) return `${Math.floor(diff / 3600000)}h`;
-
-    return timestamp.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-    });
 }
