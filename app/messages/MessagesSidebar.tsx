@@ -78,19 +78,15 @@ export function MessagesSidebar({ userId }: { userId: string }) {
     >(null);
 
     useEffect(() => {
-        closeChat();
-    }, []);
-
-    useEffect(() => {
         async function getUsers() {
             const usersWithLastMessages =
                 await fetchUsersWithLastMessage(userId);
             setConversations(usersWithLastMessages);
+            closeChat();
         }
 
         getUsers();
-        closeChat();
-    }, [userId]);
+    }, [conversations, userId]);
 
     useEffect(() => {
         const unsubscribeFromChats = conversations?.map((conversation) => {
