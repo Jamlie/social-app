@@ -24,39 +24,44 @@ async function fetchUsersWithLastMessage(currentUserUID: string) {
     const usersSnapshot = await getDocs(usersQuery);
 
     const usersData = await Promise.all(
-        usersSnapshot.docs.map(async (doc) => {
-            const userData = doc.data() as User;
-            const userId = doc.id;
+        usersSnapshot.docs
+            .filter((doc) => {
+                const userData = doc.data() as User;
+                return !userData.isDeleted;
+            })
+            .map(async (doc) => {
+                const userData = doc.data() as User;
+                const userId = doc.id;
 
-            const chatId = [currentUserUID, userId].sort().join("-");
-            const messagesRef = collection(db, "chats", chatId, "messages");
-            const lastMessageQuery = query(
-                messagesRef,
-                orderBy("timestamp", "desc"),
-                limit(1),
-            );
+                const chatId = [currentUserUID, userId].sort().join("-");
+                const messagesRef = collection(db, "chats", chatId, "messages");
+                const lastMessageQuery = query(
+                    messagesRef,
+                    orderBy("timestamp", "desc"),
+                    limit(1),
+                );
 
-            const lastMessageSnapshot = await getDocs(lastMessageQuery);
-            let lastMessage = null;
-            if (!lastMessageSnapshot.empty) {
-                const messageDoc = lastMessageSnapshot.docs[0];
-                lastMessage = {
-                    text: messageDoc.data().text,
-                    timestamp: new Date(
-                        messageDoc.data().timestamp.seconds * 1000,
-                    ),
-                    sender: messageDoc.data().sender,
+                const lastMessageSnapshot = await getDocs(lastMessageQuery);
+                let lastMessage = null;
+                if (!lastMessageSnapshot.empty) {
+                    const messageDoc = lastMessageSnapshot.docs[0];
+                    lastMessage = {
+                        text: messageDoc.data().text,
+                        timestamp: new Date(
+                            messageDoc.data().timestamp.seconds * 1000,
+                        ),
+                        sender: messageDoc.data().sender,
+                    };
+                }
+
+                return {
+                    id: userId,
+                    pfp: userData.pfp,
+                    name: userData.name,
+                    username: userData.username,
+                    lastMessage,
                 };
-            }
-
-            return {
-                id: userId,
-                pfp: userData.pfp,
-                name: userData.name,
-                username: userData.username,
-                lastMessage,
-            };
-        }),
+            }),
     );
     return usersData;
 }

@@ -42,7 +42,7 @@ export function PostsFetcher({
     currentUser,
     currentUserId,
 }: PostsFetcherProps) {
-    const [posts, setPosts] = useState<PostData[]>([]);
+    const [posts, setPosts] = useState<(PostData | null)[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -61,6 +61,10 @@ export function PostsFetcher({
                     const userDoc = await getDoc(data.userRef);
                     const userData = userDoc.data();
 
+                    if (userData?.isDeleted) {
+                        return null;
+                    }
+
                     return {
                         id: doc.id,
                         ...data,
@@ -72,11 +76,13 @@ export function PostsFetcher({
             const filteredPosts =
                 location === "profile"
                     ? postsData.filter(
-                          (post) => post.username === visitedUserId,
+                          (post) => post?.username === visitedUserId,
                       )
                     : postsData;
 
-            setPosts(filteredPosts);
+            if (filteredPosts) {
+                setPosts(filteredPosts);
+            }
             setLoading(false);
         });
 
@@ -98,17 +104,21 @@ export function PostsFetcher({
     return (
         <>
             {posts.map((post) => {
+                if (!post) {
+                    return null;
+                }
+
                 let isLiked = post.likers[currentUser];
                 return (
                     <Post
                         key={post.postID}
-                        id={post.postID}
-                        userRef={post.userRef}
-                        content={post.content}
+                        id={post.postID!}
+                        userRef={post.userRef!}
+                        content={post.content!}
                         verified={false}
                         image={post.image}
                         timestamp={new Date(
-                            post.createdAt.seconds * 1000,
+                            post.createdAt.seconds! * 1000,
                         ).toLocaleString()}
                         replies={post.replies}
                         reposts={post.reposts}

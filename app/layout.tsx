@@ -18,9 +18,16 @@ export default async function RootLayout({
 
     let decodedCookie: DecodedIdToken | null = null;
     let user: UserRecord | null = null;
-    if (sessionCookie) {
-        decodedCookie = await auth.verifySessionCookie(sessionCookie);
-        user = await auth.getUser(decodedCookie.uid);
+
+    try {
+        if (sessionCookie) {
+            decodedCookie = await auth.verifySessionCookie(sessionCookie);
+            user = await auth.getUser(decodedCookie.uid);
+        }
+    } catch (error) {
+        console.error("Session expired or invalid:", error);
+
+        cookie.delete("__session");
     }
 
     return (

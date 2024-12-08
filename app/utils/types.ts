@@ -29,4 +29,5 @@ export type User = {
     followers: string[];
     blockedUsers: string[];
     blockedBy: string[];
+    isDeleted?: boolean;
 };
