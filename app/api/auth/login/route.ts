@@ -53,6 +53,8 @@ export async function POST(request: NextRequest) {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
+        expires: new Date(Date.now() + fiveDays),
+        sameSite: "lax",
     });
 
     response.headers.set(
