@@ -5,6 +5,8 @@ import { PostsFetcher } from "./components/Post/PostsFetcher";
 import { database } from "~/app/lib/database";
 import { User } from "./utils/types";
 import { QuerySnapshot } from "firebase-admin/firestore";
+import { Suspense } from "react";
+import { PostSkeleton } from "./components/Post/PostSkeleton";
 
 export const metadata: Metadata = {
     title: "Home",

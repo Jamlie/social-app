@@ -17,6 +17,7 @@ import { app } from "../lib/firebaseClient";
 import { useEffect, useState } from "react";
 import { useChatExtensions } from "../ContextProvider/useChatExtensions";
 import { formatMessageTime } from "../utils/date";
+import { MessagesSidebarSkeleton } from "./MessagesSidebarSkeleton";
 
 async function fetchUsersWithLastMessage(currentUserUID: string) {
     const db = getFirestore(app);
@@ -136,6 +137,10 @@ export function MessagesSidebar({ userId }: { userId: string }) {
             unsubscribeFromChats?.forEach((unsubscribe) => unsubscribe());
         };
     }, [conversations, userId]);
+
+    if (!conversations) {
+        return <MessagesSidebarSkeleton />;
+    }
 
     return (
         <div className="flex flex-col h-screen">

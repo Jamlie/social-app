@@ -1,5 +1,3 @@
-import React from "react";
-
 export function PostSkeleton() {
     return (
         <div className="xs:w-30 max-w-xl mx-auto bg-white dark:bg-background border border-gray-200 dark:border-gray-800 rounded-lg p-4 my-4 animate-pulse">
